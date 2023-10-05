@@ -36,14 +36,8 @@ pipeline {
 
         stage("Quality Gate") {
             steps {
-                script {
-                    def qualityGateStartTime = new Date().toInstant().toEpochMilli()
-
+                script {                    
                     waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
-
-                    def qualityGateEndTime = new Date().toInstant().toEpochMilli()
-                    def qualityGateDuration = qualityGateEndTime - qualityGateStartTime
-                    echo "Quality Gate took ${qualityGateDuration / 1000} seconds to complete."
                 }
             }
         }
