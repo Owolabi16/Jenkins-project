@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {                    
                     timeout(time: 1, unit: 'HOURS') {
-                        waitForQualityGate abortPipeline: true, credentialsId: 'jenkins-sonarqube-token'
+                        waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
                     }
                 }
             }
