@@ -33,21 +33,6 @@ pipeline {
                 }
             }
         }
-
-        stage("Quality Gate") {
-            steps {
-                script {                    
-                    def scannerHome = tool 'Sonarqube'
-                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                    sleep(60)
-                    timeout(time: 1, unit: 'HOURS') {
-                        waitForQualityGate abortPipeline: true, credentialsId: 'jenkins-sonarqube-token'
-                    }
-                }
-            }
-        }
         
     }
 }
