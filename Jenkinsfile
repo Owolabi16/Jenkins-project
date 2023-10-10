@@ -4,6 +4,14 @@ pipeline {
         jdk 'java17'
         maven 'Maven3'
     }
+    environment {
+        APP_NAME = "register-app-pipeline"
+        RELEASE = "1.0.0"
+        DOCKER_USER = "owolabialiu"
+        DOCKER_PASS = "dockerhub"
+        IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+        IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+    }
     stages {
 
         stage("Checkout from SCM") {
@@ -30,6 +38,21 @@ pipeline {
                 withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
                     sh 'mvn sonar:sonar'
                 }   
+                }
+            }
+        }
+
+        stage("Build & Push Docker Image") {
+            steps {
+                script {
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }
+
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image.Push("${IMAGE_NAME}")
+                        docker_image.Push('latest')
+                    }
                 }
             }
         }
